@@ -1,0 +1,14 @@
+$primary-color: #007bff;
+
+.customButton {
+  background-color: $primary-color;
+  color: white;
+
+  &:after {
+    content: '';
+    display: block;
+    width: 100px;
+    height: 100px;
+    background-color: red;
+  }
+}
