@@ -4,6 +4,8 @@ import React from "react";
 
 import './App.scss';
 import TimeCounter from "../TimeCounter/TimeCounter";
+import {TimeCounterFormat} from "../TimeCounter/types/TimeCounter";
+import {getCountersOfDays} from "../utils/utils";
 
 interface Props {}
 
@@ -13,9 +15,12 @@ const App: React.FC<Props> = (props: Props) => {
     };
 
     return <>
-        <div>Hello world</div>
-        <button onClick={onClick} className="customButton">)))))</button>
-        <TimeCounter />
+        {new Array(60).fill(1).map((el, index) => (
+            <TimeCounter
+                timeCounterFormat={TimeCounterFormat.Seconds}
+                value={index + 1}
+            />)
+        )}
     </>;
 };
 
