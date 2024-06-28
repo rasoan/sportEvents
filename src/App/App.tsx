@@ -3,10 +3,8 @@
 import React, {useEffect} from "react";
 
 import './App.scss';
-import TimeCounter from "../TimeCounter/TimeCounter";
-import {TimeCounterFormat} from "../TimeCounter/types/TimeCounter";
-import {getCountersOfDays} from "../utils/utils";
-import {api} from "../Api/Api";
+import {api} from "../api/api";
+import DefaultWidget, {DefaultWidget_mode} from "../DefaultWidget/DefaultWidget";
 
 interface Props {}
 
@@ -17,14 +15,18 @@ const App: React.FC<Props> = (props: Props) => {
         });
     }, []);
 
-    return <>
+    return <div className={"wrapper"}>
+        <DefaultWidget mode={DefaultWidget_mode.WithOtherEvents} />
+    </div>;
+};
+
+export default App;
+
+/*
         {new Array(60).fill(1).map((el, index) => (
             <TimeCounter
                 timeCounterFormat={TimeCounterFormat.Seconds}
                 value={index + 1}
             />)
         )}
-    </>;
-};
-
-export default App;
+ */

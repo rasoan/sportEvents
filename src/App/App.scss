@@ -1,14 +1,21 @@
-$primary-color: #007bff;
+html, body {
+  padding: 0;
+  margin: 0;
+  min-height: 100vh;
+}
 
-.customButton {
-  background-color: $primary-color;
+#root {
+  min-height: 100vh;
+  display: flex;
+}
+
+.wrapper {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  background-color: #12203e;
   color: white;
 
-  &:after {
-    content: '';
-    display: block;
-    width: 100px;
-    height: 100px;
-    background-color: red;
-  }
+  align-items: center;
+  justify-content: center;
 }

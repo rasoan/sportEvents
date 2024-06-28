@@ -39,5 +39,5 @@
     "strictPropertyInitialization": true,
     "newLine": "lf"
   },
-  "include": ["src/**/*"]
+  "include": ["src/"]
 }
