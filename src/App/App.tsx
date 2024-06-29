@@ -24,8 +24,8 @@ const App: React.FC<Props> = (props: Props) => {
         setVideostandEvents([
             {
                 dt_create: "2024-01-31T02:39:01+03:00",
+                dt_start: "2024-06-28T13:00:00+03:00",
                 dt_end: "2024-07-01T11:13:00+03:00",
-                dt_start: "2024-06-30T17:55:00+03:00",
                 is_main: false,
                 title: "Чемпионат Италии",
             },
