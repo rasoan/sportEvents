@@ -1,28 +1,44 @@
 'use strict';
 
-import React, {useEffect} from "react";
+import React, {useEffect, useMemo, useRef, useState} from "react";
 
 import './DefaultWidget.scss';
 import {Space} from "antd";
-
-export const enum DefaultWidget_mode {
-    Solo = 1,
-    WithOtherEvents = 2,
-}
+import {DefaultWidget_mode} from "../App/types/App";
 
 interface Props {
-    mode: DefaultWidget_mode;
+    mode?: DefaultWidget_mode;
 }
 
 const DefaultWidget: React.FC<Props> = (props: Props) => {
     const {
-        mode,
+        mode = DefaultWidget_mode.WithOtherEvents,
     } = props;
     const {
-        time,
-        dayAndMonth,
-        dayOfWeek,
+        time: _time,
+        dayAndMonth: _dayAndMonth,
+        dayOfWeek: _dayOfWeek,
     } = getDateLabels();
+    const intervalRef = useRef<ReturnType<typeof setInterval>>();
+    const [ time, setTime ] = useState<string>(_time);
+    const [ dayAndMonth, setDayAndMonth ] = useState<string>(_dayAndMonth);
+    const [ dayOfWeek, setDayOfWeek ] = useState<string>(_dayOfWeek);
+
+    useEffect(() => {
+        intervalRef.current = setInterval(() => {
+            const {
+                time,
+                dayAndMonth,
+                dayOfWeek,
+            } = getDateLabels();
+
+            setTime(time);
+            setDayAndMonth(dayAndMonth);
+            setDayOfWeek(dayOfWeek);
+        }, 1000);
+
+        return () => clearInterval(intervalRef.current);
+    }, []);
 
     return <div className={"DefaultWidget"}>
         <div className={`DefaultWidget__timeWrapper wrapper timeWrapper${mode === DefaultWidget_mode.Solo ? ' timeWrapper-solo' : ''}`}>

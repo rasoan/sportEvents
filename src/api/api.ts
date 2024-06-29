@@ -2,7 +2,7 @@
 
 import axios from 'axios';
 
-interface Current_and_upcoming {
+export interface Current_and_upcoming {
     title: string;
     is_main: boolean;
     dt_start: string;
@@ -10,7 +10,7 @@ interface Current_and_upcoming {
     dt_create: string;
 }
 
-interface VideostandEvents {
+export interface VideostandEvents {
     current_and_upcoming: Current_and_upcoming[];
 }
 

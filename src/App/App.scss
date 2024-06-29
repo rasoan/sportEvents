@@ -1,3 +1,5 @@
+$textColor: white;
+
 html, body {
   padding: 0;
   margin: 0;
@@ -9,13 +11,41 @@ html, body {
   display: flex;
 }
 
-.wrapper {
+// Кастомный стиль для antd текста, сделал глобально,
+// но в реальном проекте надо завернуть в обёртку, что бы локально только было, а не глобально
+.ant-progress-text {
+  span {
+    color: $textColor !important;
+  }
+}
+
+.appWrapper {
   flex-grow: 1;
   display: flex;
   flex-direction: column;
   background-color: #12203e;
-  color: white;
+  color: $textColor;
+  align-items: center;
+  justify-content: space-around
+}
 
+.app {
+  &__row {
+
+  }
+}
+
+.appRow {
+  width: 65%;
+  display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
+  margin: auto;
+
+  &-sportEvent {
+    min-height: 45%;
+    width: 100%;
+    margin: 0;
+  }
 }

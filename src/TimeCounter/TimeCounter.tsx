@@ -9,6 +9,7 @@ import {TimeCounterFormat} from "./types/TimeCounter";
 const humanizeDuration = require("humanize-duration");
 
 import './TimeCounter.scss';
+import {MAX_DAYS} from "../utils/utils";
 
 interface Props {
     timeCounterFormat: TimeCounterFormat;
@@ -23,6 +24,7 @@ const TimeCounter: React.FC<Props> = (props: Props) => {
         value,
         timeCounterFormat,
     } = props;
+
     const {
         percent,
         steps,
@@ -64,9 +66,6 @@ interface ProgressOptions {
 }
 
 const _getProgressOptions = (() => {
-    // todo: глянуть ещё раз ТЗ
-    // todo: учесть, что value может быть больше чем надо, тогда взять %
-    const MAX_DAYS = 7;
     const MAX_HOURS = 24;
     const MAX_MINUTES = 60;
     const MAX_SECONDS = 60;
@@ -151,7 +150,7 @@ const _getProgressOptions = (() => {
             labelWithoutNumber,
             steps,
             // Формула вычисления процентов
-            percent: Math.round(value / steps * 100),
+            percent: 100 - Math.round(value / steps * 100),
         };
     }
 })();
