@@ -5,6 +5,7 @@ import React, {useEffect, useMemo, useRef, useState} from "react";
 import './DefaultWidget.scss';
 import {Space} from "antd";
 import {DefaultWidget_mode} from "../App/types/App";
+import {normalizeDateItem} from "../utils/utils";
 
 interface Props {
     mode?: DefaultWidget_mode;
@@ -66,7 +67,7 @@ const getDateLabels = (() => {
 
     return () => {
         const date = new Date();
-        const time = `${date.getHours()}:${date.getMinutes().toString().padStart(2, '0')}`;
+        const time = `${date.getHours()}:${normalizeDateItem(date.getMinutes())}`;
 
         // С единицы подсчёт начинается, а массив с нуля
         const dayOfWeek = daysOfWeek[date.getDay() - 1];

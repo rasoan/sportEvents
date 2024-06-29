@@ -23,9 +23,9 @@ const App: React.FC<Props> = (props: Props) => {
         // });
         setVideostandEvents([
             {
-                dt_create: "2024-01-31T02:39:01+03:00",
-                dt_start: "2024-06-28T13:00:00+03:00",
-                dt_end: "2024-07-01T11:13:00+03:00",
+                dt_create: "",
+                dt_start: "2024-08-01T13:00:00+03:00",
+                dt_end: "2024-09-01T16:00:00+03:00",
                 is_main: false,
                 title: "Чемпионат Италии",
             },
@@ -63,7 +63,7 @@ const App: React.FC<Props> = (props: Props) => {
         </div>
         {mode === DefaultWidget_mode.WithOtherEvents ? <>
             <div className={"app__row appRow appRow-sportEvent"}>
-                {currentEvent ? <SportEvent sportEvent={currentEvent}/> : null}
+                {currentEvent ? <SportEvent sportEvent={currentEvent} /> : null}
             </div>
             <div className={"app__row appRow"}>
                 {currentEvent ? <SportEventHeader

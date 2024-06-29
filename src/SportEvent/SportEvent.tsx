@@ -28,8 +28,8 @@ const SportEvent: React.FC<Props> = (props: Props) => {
 
     return <div className={"sportEvent"}>
         <SportEventHeader
-            dateStart={dt_start}
             title={title}
+            dateStart={dt_start}
             dateEnd={dt_end}
         />
         {!isSportEventNow ? <>

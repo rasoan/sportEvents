@@ -93,3 +93,7 @@ function _getCountMinutesByMilliseconds(milliseconds: number) {
 function _getCountSecondsByMilliseconds(milliseconds: number) {
     return Math.floor(milliseconds / COUNT_MILLISECONDS_IN_SECOND);
 }
+
+export function normalizeDateItem(dateItem: number): string {
+    return String(dateItem).padStart(2, '0');
+}
