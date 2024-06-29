@@ -30,8 +30,8 @@ const SportEventHeader: React.FC<Props> = (props: Props) => {
     });
 
     return <div className={`sportEventHeader`}>
-        <h3 className={"container__dateStart dateStart"}>{dateStart}</h3>
-        <h2 className={`container__title title${sportEventHeaderMode === SportEventHeaderMode.WithoutSportEventContainer ? ' title-withoutSportEventContainer' : ''}`}>
+        <h3 className={"container__dateStart text dateStart"}>{dateStart}</h3>
+        <h2 className={`container__title text title${sportEventHeaderMode === SportEventHeaderMode.WithoutSportEventContainer ? ' title-withoutSportEventContainer' : ''}`}>
             {title}
         </h2>
     </div>;
