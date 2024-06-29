@@ -3,7 +3,7 @@
 import React, {useEffect, useState} from "react";
 
 import './App.scss';
-import {Current_and_upcoming} from "../api/api";
+import {VideoStandEvent} from "../api/api";
 import DefaultWidget from "../DefaultWidget/DefaultWidget";
 import SportEvent from "../SportEvent/SportEvent";
 import SportEventHeader, {SportEventHeaderMode} from "../SportEventHeader/SportEventHeader";
@@ -13,49 +13,62 @@ interface Props {}
 
 
 const App: React.FC<Props> = (props: Props) => {
-    const [ videostandEvents, setVideostandEvents ] = useState<
-        Current_and_upcoming[]
-    >([]);
+    const [ videoStandEventCurrent, setVideoStandEventCurrent ] = useState<VideoStandEvent>();
+    const [ videoStandEventNext, setVideoStandEventNext ] = useState<VideoStandEvent>();
 
     useEffect(() => {
         // api.getSportEvents().then(response => {
-        //     setVideostandEvents(response.videostandEvents.current_and_upcoming)
+        //     setVideoStandEvents(response.videoStandEvents.current_and_upcoming)
         // });
-        setVideostandEvents([
+        const _videoStandEvents: VideoStandEvent[] = [
             {
-                dt_create: "",
-                dt_start: "2024-08-01T13:00:00+03:00",
-                dt_end: "2024-09-01T16:00:00+03:00",
+                dt_start: "2024-08-16T10:00:00+03:00",
+                dt_end: "2024-08-20T23:59:00+03:00",
+                dt_create: "2024-01-31T02:39:01+03:00",
                 is_main: false,
+                title: "Чемпионат Москвы",
+            },
+            {
+                dt_start: "2024-07-15T13:00:00+03:00",
+                dt_end: "2024-12-22T16:00:00+03:00",
+                dt_create: "2023-01-31T02:39:01+03:00",
+                is_main: true,
                 title: "Чемпионат Италии",
             },
-            // {
-            //     dt_create: "2024-01-31T02:39:01+03:00",
-            //     dt_end: "2024-06-20T23:59:00+03:00",
-            //     dt_start: "2024-06-16T10:00:00+03:00",
-            //     is_main: false,
-            //     title: "Чемпионат Китая",
-            // },
-            // {
-            //     dt_create: "2024-01-31T02:39:01+03:00",
-            //     dt_end: "2024-06-20T23:59:00+03:00",
-            //     dt_start: "2024-06-16T10:00:00+03:00",
-            //     is_main: false,
-            //     title: "Чемпионат Москвы",
-            // },
-            // {
-            //     dt_create: "2024-01-31T02:39:01+03:00",
-            //     dt_end: "2024-06-20T23:59:00+03:00",
-            //     dt_start: "2024-06-16T10:00:00+03:00",
-            //     is_main: false,
-            //     title: "Чемпионат Литвы",
-            // },
-        ]);
+            {
+                dt_start: "2024-10-16T10:00:00+03:00",
+                dt_end: "2024-10-18T23:59:00+03:00",
+                dt_create: "2024-01-31T02:39:01+03:00",
+                is_main: false,
+                title: "Чемпионат Литвы",
+            },
+            {
+                dt_start: "2024-07-01T10:00:00+03:00",
+                dt_end: "2024-07-05T23:59:00+03:00",
+                dt_create: "2024-01-31T02:39:01+03:00",
+                is_main: false,
+                title: "Чемпионат Китая",
+            },
+        ];
+
+        const {
+            videoStandEventCurrent,
+            videoStandEventNext,
+        } = _getCurrentAndNextVideoStandEvents(_videoStandEvents)
+
+        if (videoStandEventCurrent) {
+            setVideoStandEventCurrent(videoStandEventCurrent);
+        }
+
+        if (videoStandEventNext) {
+            setVideoStandEventNext(videoStandEventNext);
+        }
     }, []);
 
-    const [ currentEvent ] = videostandEvents;
-
-    const mode: DefaultWidget_mode = false ? DefaultWidget_mode.Solo : DefaultWidget_mode.WithOtherEvents;
+    const mode: DefaultWidget_mode = (videoStandEventCurrent || videoStandEventNext)
+        ? DefaultWidget_mode.WithOtherEvents
+        : DefaultWidget_mode.Solo
+    ;
 
     return <div className={"app appWrapper"}>
         <div className={"app__row appRow"}>
@@ -63,13 +76,13 @@ const App: React.FC<Props> = (props: Props) => {
         </div>
         {mode === DefaultWidget_mode.WithOtherEvents ? <>
             <div className={"app__row appRow appRow-sportEvent"}>
-                {currentEvent ? <SportEvent sportEvent={currentEvent} /> : null}
+                {videoStandEventCurrent ? <SportEvent sportEvent={videoStandEventCurrent} /> : null}
             </div>
             <div className={"app__row appRow"}>
-                {currentEvent ? <SportEventHeader
-                    title={currentEvent.title}
-                    dateStart={currentEvent.dt_start}
-                    dateEnd={currentEvent.dt_end}
+                {videoStandEventNext ? <SportEventHeader
+                    title={videoStandEventNext.title}
+                    dateStart={videoStandEventNext.dt_start}
+                    dateEnd={videoStandEventNext.dt_end}
                     sportEventHeaderMode={SportEventHeaderMode.WithoutSportEventContainer}
                 /> : null}
             </div>
@@ -78,3 +91,35 @@ const App: React.FC<Props> = (props: Props) => {
 };
 
 export default App;
+
+function _getCurrentAndNextVideoStandEvents(videoStandEvents: VideoStandEvent[]): {
+    videoStandEventCurrent?: VideoStandEvent,
+    videoStandEventNext?: VideoStandEvent,
+} {
+    const _videoStandEvents = videoStandEvents.sort(
+        (videoStandEvents_prev, videoStandEvents_next) => {
+            return new Date(videoStandEvents_prev.dt_start).getTime() - new Date(videoStandEvents_next.dt_start).getTime();
+        }
+    );
+    const currentAndNextVideoStandEvents: {
+        videoStandEventCurrent?: VideoStandEvent,
+        videoStandEventNext?: VideoStandEvent,
+    } = {};
+
+    const mainEvent = videoStandEvents.find(({ is_main }) => is_main);
+
+    if (mainEvent) {
+        currentAndNextVideoStandEvents.videoStandEventCurrent = mainEvent;
+    }
+    else {
+        currentAndNextVideoStandEvents.videoStandEventCurrent = _videoStandEvents[0];
+    }
+
+    if (_videoStandEvents.length > 1) {
+        currentAndNextVideoStandEvents.videoStandEventNext = videoStandEvents.find(
+            ({dt_create}) => dt_create !== currentAndNextVideoStandEvents.videoStandEventCurrent?.dt_create
+        );
+    }
+
+    return currentAndNextVideoStandEvents;
+}

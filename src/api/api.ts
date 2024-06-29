@@ -2,13 +2,15 @@
 
 import axios from 'axios';
 
-export interface Current_and_upcoming {
+interface Current_and_upcoming {
     title: string;
     is_main: boolean;
     dt_start: string;
     dt_end: string;
     dt_create: string;
 }
+
+export type VideoStandEvent = Current_and_upcoming;
 
 export interface VideostandEvents {
     current_and_upcoming: Current_and_upcoming[];

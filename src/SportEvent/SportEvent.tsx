@@ -2,14 +2,14 @@
 
 import React from "react";
 import TimersList from "../TimersList/TimersList";
-import {Current_and_upcoming} from "../api/api";
 
 import "./SportEvent.scss";
 import SportEventHeader, {SportEventHeaderMode} from "../SportEventHeader/SportEventHeader";
 import {FieldTimeOutlined} from "@ant-design/icons";
+import {VideoStandEvent} from "../api/api";
 
 interface Props {
-    sportEvent: Current_and_upcoming;
+    sportEvent: VideoStandEvent;
 }
 
 const SportEvent: React.FC<Props> = (props: Props) => {
