@@ -69,13 +69,13 @@ function _getRemainderOfSeconds(milliseconds: number): number {
     return countSeconds % COUNT_SECONDS_IN_MINUTE;
 }
 
-const COUNT_HOURS_IN_DAY = 24;
-const COUNT_MINUTES_IN_HOUR = 60;
-const COUNT_SECONDS_IN_MINUTE = 60;
-const COUNT_MILLISECONDS_IN_SECOND = 1000;
-const COUNT_MILLISECONDS_IN_MINUTE = COUNT_MILLISECONDS_IN_SECOND * COUNT_SECONDS_IN_MINUTE;
-const COUNT_MILLISECONDS_IN_HOUR = COUNT_MILLISECONDS_IN_MINUTE * COUNT_MINUTES_IN_HOUR;
-const COUNT_MILLISECONDS_IN_DAY = COUNT_MILLISECONDS_IN_HOUR * COUNT_HOURS_IN_DAY;
+export const COUNT_HOURS_IN_DAY = 24;
+export const COUNT_MINUTES_IN_HOUR = 60;
+export const COUNT_SECONDS_IN_MINUTE = 60;
+export const COUNT_MILLISECONDS_IN_SECOND = 1000;
+export const COUNT_MILLISECONDS_IN_MINUTE = 60000;
+export const COUNT_MILLISECONDS_IN_HOUR = 3600000;
+export const COUNT_MILLISECONDS_IN_DAY = 86400000;
 
 function _getCountDaysByMilliseconds(milliseconds: number) {
     // 86400 секунд в одном дне, а поскольку работаем с миллисекундами, то докидываем 1000 поскольку в одной сек 1000 милсек.
@@ -96,4 +96,20 @@ function _getCountSecondsByMilliseconds(milliseconds: number) {
 
 export function normalizeDateItem(dateItem: number): string {
     return String(dateItem).padStart(2, '0');
+}
+
+export function getAllCountTimes(dateStart: string) {
+    const date_startEvent = new Date(dateStart);
+    const date_now = new Date();
+    const difference = date_startEvent.getTime() - date_now.getTime();
+
+    const allDays = _getCountDaysByMilliseconds(difference);
+    const allHours = _getCountHoursByMilliseconds(difference);
+    const allMinutes = _getCountMinutesByMilliseconds(difference);
+
+    return {
+        allDays,
+        allHours,
+        allMinutes,
+    }
 }

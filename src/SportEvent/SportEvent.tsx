@@ -24,6 +24,7 @@ const SportEvent: React.FC<Props> = (props: Props) => {
     const dateTime_now = new Date().getTime();
     const differenceTime_start = dateTime_now - new Date(dt_start).getTime();
     const differenceTime_end = new Date(dt_end).getTime() - dateTime_now;
+    // todo: здесь вычислить в useState и по setTimeout выставлять плашку, что идёт сейчас соревнование
     const isSportEventNow = differenceTime_start > 0 && differenceTime_end > 0;
 
     return <div className={"sportEvent"}>

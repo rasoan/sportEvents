@@ -61,8 +61,8 @@ const getDateLabels = (() => {
         "июля", "августа", "сентября", "октября", "ноября", "декабря"
     ];
     const daysOfWeek = [
-        'понедельник', 'вторник', 'среда',
-        'четверг', 'пятница', 'суббота', 'воскресенье'
+        'воскресенье', 'понедельник', 'вторник', 'среда',
+        'четверг', 'пятница', 'суббота',
     ];
 
     return () => {
@@ -70,7 +70,7 @@ const getDateLabels = (() => {
         const time = `${date.getHours()}:${normalizeDateItem(date.getMinutes())}`;
 
         // С единицы подсчёт начинается, а массив с нуля
-        const dayOfWeek = daysOfWeek[date.getDay() - 1];
+        const dayOfWeek = daysOfWeek[date.getDay()];
         const dayAndMonth = `${date.getDate()} ${monthNames[date.getMonth()]}`;
 
         return {

@@ -1,15 +1,23 @@
 // progress - https://ant.design/components/progress#components-progress-demo-circle
 'use strict';
 
-import React from "react";
+import React, {useEffect, useRef, useState} from "react";
 
 import {Flex, Progress} from "antd";
 import {TimeCounterFormat} from "./types/TimeCounter";
+import './TimeCounter.scss';
+import {
+    COUNT_HOURS_IN_DAY,
+    COUNT_MILLISECONDS_IN_DAY,
+    COUNT_MILLISECONDS_IN_HOUR,
+    COUNT_MILLISECONDS_IN_MINUTE,
+    COUNT_MILLISECONDS_IN_SECOND,
+    COUNT_MINUTES_IN_HOUR,
+    COUNT_SECONDS_IN_MINUTE,
+    MAX_DAYS
+} from "../utils/utils";
 
 const humanizeDuration = require("humanize-duration");
-
-import './TimeCounter.scss';
-import {MAX_DAYS} from "../utils/utils";
 
 interface Props {
     timeCounterFormat: TimeCounterFormat;
@@ -17,13 +25,22 @@ interface Props {
      * Текущее значение дня, часа, минуты или секунды в зависимости от {@link timeCounterFormat}
      */
     value: number;
+    /** Кол-во миллисекунд через которое надо декрементить таймер */
+    millisecondsRemaining?: number;
+    /** Кол-во раз, которое мы можем восстановить таймер */
+    countReset?: number;
 }
 
 const TimeCounter: React.FC<Props> = (props: Props) => {
     const {
-        value,
+        value: _value,
         timeCounterFormat,
+        millisecondsRemaining = 0,
+        countReset = 0,
     } = props;
+    const [value, setValue] = useState<number>(_value);
+    const intervalRef_decrementValue = useRef<ReturnType<typeof setInterval>>();
+    const timeoutRef = useRef<ReturnType<typeof setTimeout>>();
 
     const {
         percent,
@@ -32,9 +49,55 @@ const TimeCounter: React.FC<Props> = (props: Props) => {
     } = _getProgressOptions({
         value,
         timeCounterFormat,
-    })
+    });
 
-    return <>
+    useEffect(() => {
+        let {
+            intervalTimeDecrementTimer,
+            valueResetTimer,
+        } = getIntervalTime(timeCounterFormat);
+        let _countReset = countReset;
+
+        timeoutRef.current = setTimeout(() => {
+            // Декремент
+            const intervalCallback = () => {
+                setValue(value => {
+                    // Если значение счётчика таймера упало до нуля
+                    if (value <= 0) {
+                        // То смотрим, есть ли ещё заряды для reset его
+                        if (_countReset > 0) {
+                            --_countReset;
+
+                            return valueResetTimer;
+                        }
+                        // Если зарядов нет, то этот таймер "всё", сносим все таймауты и интервалы
+                        else {
+                            clearInterval(intervalRef_decrementValue.current);
+                            clearTimeout(timeoutRef.current);
+                        }
+                    }
+
+                    return --value;
+                });
+            };
+
+            intervalCallback();
+
+            intervalRef_decrementValue.current = setInterval(intervalCallback, intervalTimeDecrementTimer);
+        }, millisecondsRemaining);
+        return () => {
+            clearInterval(intervalRef_decrementValue.current);
+            clearInterval(timeoutRef.current);
+        };
+    }, []);
+
+    // Все таймеры кроме секунд с нулём будем прятать (что бы не скакало раз в минуту)
+    const isHiddenTimer = value === 0 && timeCounterFormat !== TimeCounterFormat.Seconds
+        // Любой таймер с отрицательным значением прячем
+        || value < 0
+    ;
+
+    return <div className={`timeCounter ${isHiddenTimer ? ' timeCounter-hidden' : ''}`}>
         <Flex align="center" wrap gap={30}>
             <Progress
                 type="circle"
@@ -54,7 +117,7 @@ const TimeCounter: React.FC<Props> = (props: Props) => {
                 </>}
             />
         </Flex>
-    </>;
+    </div>;
 };
 
 export default TimeCounter;
@@ -178,4 +241,68 @@ function _convertValueToMilliseconds(options: {
     } = options;
 
     return value * (seconds * 1000);
+}
+
+function getIntervalTime(timeCounterFormat: TimeCounterFormat): {
+    intervalTimeDecrementTimer: number,
+    /** Число к которому надо сбросить таймер */
+    valueResetTimer: number,
+} {
+    switch (timeCounterFormat) {
+        case TimeCounterFormat.Days: {
+            return {
+                intervalTimeDecrementTimer: COUNT_MILLISECONDS_IN_DAY,
+                valueResetTimer: 0,
+            };
+        }
+        case TimeCounterFormat.Hours: {
+            return {
+                intervalTimeDecrementTimer: COUNT_MILLISECONDS_IN_HOUR,
+                valueResetTimer: COUNT_HOURS_IN_DAY - 1,
+            };
+        }
+        case TimeCounterFormat.Minutes: {
+            return {
+                intervalTimeDecrementTimer: COUNT_MILLISECONDS_IN_MINUTE,
+                valueResetTimer: COUNT_MINUTES_IN_HOUR - 1,
+            };
+        }
+        case TimeCounterFormat.Seconds: {
+            return {
+                intervalTimeDecrementTimer: COUNT_MILLISECONDS_IN_SECOND,
+                valueResetTimer: COUNT_SECONDS_IN_MINUTE - 1,
+            };
+        }
+        default: {
+            throw new Error("Unknown format!");
+        }
+    }
+}
+
+function logs(options: {
+    timeCounterFormat: TimeCounterFormat,
+    countReset: number,
+    millisecondsRemaining: number,
+}) {
+    const {
+        timeCounterFormat,
+        countReset,
+        millisecondsRemaining,
+    } = options;
+
+    let {
+        intervalTimeDecrementTimer,
+        valueResetTimer,
+    } = getIntervalTime(timeCounterFormat);
+
+    if (timeCounterFormat !== TimeCounterFormat.Seconds) {
+        console.table([
+            ["Перерендерился таймер", timeCounterFormat],
+            ["Исходное кол-во зарядов (сброса таймера) было", countReset],
+            ["Восстановит таймер до value", valueResetTimer],
+            ["Сбросится через кол-во сек ", millisecondsRemaining / COUNT_MILLISECONDS_IN_SECOND],
+            ["Интервал сброса таймера сек ", intervalTimeDecrementTimer / COUNT_MILLISECONDS_IN_SECOND],
+            ["Текущее время ререндера этого таймера", new Date().toLocaleTimeString()],
+        ])
+    }
 }
