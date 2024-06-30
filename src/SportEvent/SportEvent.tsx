@@ -1,6 +1,6 @@
 'use strict';
 
-import React from "react";
+import React, {useEffect, useRef, useState} from "react";
 import TimersList from "../TimersList/TimersList";
 
 import "./SportEvent.scss";
@@ -21,11 +21,33 @@ const SportEvent: React.FC<Props> = (props: Props) => {
         title,
         dt_end,
     } = sportEvent;
-    const dateTime_now = new Date().getTime();
-    const differenceTime_start = dateTime_now - new Date(dt_start).getTime();
-    const differenceTime_end = new Date(dt_end).getTime() - dateTime_now;
-    // todo: здесь вычислить в useState и по setTimeout выставлять плашку, что идёт сейчас соревнование
-    const isSportEventNow = differenceTime_start > 0 && differenceTime_end > 0;
+    const [isSportEventNow, setIsSportEventNow] = useState<boolean>(false);
+    const timeoutRef_startEvent = useRef<ReturnType<typeof setInterval>>();
+    const timeoutRef_endEvent = useRef<ReturnType<typeof setInterval>>();
+
+    useEffect(() => {
+        const dateTime_now = new Date().getTime();
+        const differenceTime_start = new Date(dt_start).getTime() - dateTime_now;
+        const differenceTime_end = new Date(dt_end).getTime() - dateTime_now;
+        const isSportEventNow = differenceTime_start < 0 && differenceTime_end > 0;
+
+        setIsSportEventNow(isSportEventNow);
+
+        if (differenceTime_start > 0) {
+            timeoutRef_startEvent.current = setTimeout(() => {
+                setIsSportEventNow(true);
+            }, differenceTime_start);
+        }
+
+        timeoutRef_endEvent.current = setTimeout(() => {
+            setIsSportEventNow(false);
+        }, differenceTime_end);
+
+        return () => {
+            clearTimeout(timeoutRef_startEvent.current);
+            clearTimeout(timeoutRef_endEvent.current);
+        }
+    }, []);
 
     return <div className={"sportEvent"}>
         <SportEventHeader

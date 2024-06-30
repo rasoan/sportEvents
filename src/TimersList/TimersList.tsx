@@ -39,8 +39,6 @@ const TimersList: React.FC<Props> = (props: Props) => {
         || countMinutes < 0
         || countSeconds < 0
     ) {
-        console.warn("Value should be more than 0!");
-
         return null;
     }
 
