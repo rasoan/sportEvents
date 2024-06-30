@@ -3,7 +3,7 @@
 import React, {useEffect, useState} from "react";
 
 import './App.scss';
-import {VideoStandEvent} from "../api/api";
+import {api, VideoStandEvent} from "../api/api";
 import DefaultWidget from "../DefaultWidget/DefaultWidget";
 import SportEvent from "../SportEvent/SportEvent";
 import SportEventHeader, {SportEventHeaderMode} from "../SportEventHeader/SportEventHeader";
@@ -17,10 +17,24 @@ const App: React.FC<Props> = (props: Props) => {
     const [ videoStandEventNext, setVideoStandEventNext ] = useState<VideoStandEvent>();
 
     useEffect(() => {
-        // api.getSportEvents().then(response => {
-        //     setVideoStandEvents(response.videoStandEvents.current_and_upcoming)
-        // });
-        const _videoStandEvents: VideoStandEvent[] = [
+        api.getSportEvents().then(response => {
+            const {
+                videoStandEventCurrent,
+                videoStandEventNext,
+            } = _getCurrentAndNextVideoStandEvents(response.videostandEvents.current_and_upcoming)
+
+            if (videoStandEventCurrent) {
+                setVideoStandEventCurrent(videoStandEventCurrent);
+            }
+
+            if (videoStandEventNext) {
+                setVideoStandEventNext(videoStandEventNext);
+            }
+        });
+
+        // Тестовый код, можно раскомментировать и проверить без сервера
+        /*
+        const videoStandEvents: VideoStandEvent[] = [
             {
                 dt_start: "2024-08-16T10:00:00+03:00",
                 dt_end: "2024-08-20T23:59:00+03:00",
@@ -29,32 +43,24 @@ const App: React.FC<Props> = (props: Props) => {
                 title: "Чемпионат Москвы",
             },
             {
-                dt_start: "2024-06-30T11:13:00+03:00",
-                dt_end: "2024-06-30T11:14:00+03:00",
+                dt_start: "2024-07-01T11:13:00+03:00",
+                dt_end: "2024-07-10T11:14:00+03:00",
                 dt_create: "2023-01-31T02:39:01+03:00",
                 is_main: true,
-                title: "Чемпионат Италии",
+                title: "Чемпионат Ярославля",
             },
             {
                 dt_start: "2024-10-16T10:00:00+03:00",
                 dt_end: "2024-10-18T23:59:00+03:00",
                 dt_create: "2024-01-31T02:39:01+03:00",
                 is_main: false,
-                title: "Чемпионат Литвы",
-            },
-            {
-                dt_start: "2024-07-01T10:00:00+03:00",
-                dt_end: "2024-07-05T23:59:00+03:00",
-                dt_create: "2024-01-31T02:39:01+03:00",
-                is_main: false,
-                title: "Чемпионат Китая",
+                title: "Чемпионат Нижнего Новгорода",
             },
         ];
-
         const {
             videoStandEventCurrent,
             videoStandEventNext,
-        } = _getCurrentAndNextVideoStandEvents(_videoStandEvents)
+        } = _getCurrentAndNextVideoStandEvents(videoStandEvents)
 
         if (videoStandEventCurrent) {
             setVideoStandEventCurrent(videoStandEventCurrent);
@@ -63,6 +69,7 @@ const App: React.FC<Props> = (props: Props) => {
         if (videoStandEventNext) {
             setVideoStandEventNext(videoStandEventNext);
         }
+         */
     }, []);
 
     const mode: DefaultWidget_mode = (videoStandEventCurrent || videoStandEventNext)
