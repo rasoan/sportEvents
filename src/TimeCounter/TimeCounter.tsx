@@ -97,13 +97,39 @@ const TimeCounter: React.FC<Props> = (props: Props) => {
         || value < 0
     ;
 
+    let progressColor: string;
+
+    switch (timeCounterFormat) {
+        case TimeCounterFormat.Days: {
+            progressColor = "#0062b5";
+
+            break;
+        }
+        case TimeCounterFormat.Hours: {
+            progressColor = "#d62f0d";
+
+            break;
+        }
+        case TimeCounterFormat.Minutes: {
+            progressColor = "#fdae47";
+
+            break;
+        }
+        case TimeCounterFormat.Seconds: {
+            progressColor = "#51acd8";
+
+            break;
+        }
+    }
+
     return <div className={`timeCounter ${isHiddenTimer ? ' timeCounter-hidden' : ''}`}>
         <Flex align="center" wrap gap={30}>
             <Progress
                 type="circle"
+                trailColor={progressColor}
                 steps={steps}
                 percent={percent}
-                strokeColor="green"
+                strokeColor="none"
                 format={() => <>
                     <div className={"antProgressTextCustom"}>
                         <span className={'antProgressTextCustom__label antProgressTextCustom__label-withNumber'}>

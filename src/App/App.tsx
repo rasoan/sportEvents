@@ -29,7 +29,7 @@ const App: React.FC<Props> = (props: Props) => {
                 title: "Чемпионат Москвы",
             },
             {
-                dt_start: "2024-06-30T10:22:00+03:00",
+                dt_start: "2024-07-01T12:22:00+03:00",
                 dt_end: "2024-12-22T16:00:00+03:00",
                 dt_create: "2023-01-31T02:39:01+03:00",
                 is_main: true,
