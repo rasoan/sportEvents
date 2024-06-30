@@ -1,0 +1,25 @@
+.timeCounter {
+  margin: 0 10px;
+
+  &-hidden {
+    display: none;
+  }
+}
+
+.antProgressTextCustom {
+  padding: 10px !important;
+
+  &__label {
+    color: black !important;
+    line-height: 0;
+
+    &-withNumber {
+      font-weight: bold;
+      font-size: 40px;
+    }
+
+    &-withText {
+      font-size: 20px;
+    }
+  }
+}
