@@ -8,6 +8,7 @@ import DefaultWidget from "../DefaultWidget/DefaultWidget";
 import SportEvent from "../SportEvent/SportEvent";
 import SportEventHeader, {SportEventHeaderMode} from "../SportEventHeader/SportEventHeader";
 import {DefaultWidget_mode} from "./types/App";
+import {COUNT_MILLISECONDS_IN_DAY} from "../utils/utils";
 
 interface Props {}
 
@@ -17,6 +18,7 @@ const App: React.FC<Props> = (props: Props) => {
     const [ videoStandEventNext, setVideoStandEventNext ] = useState<VideoStandEvent>();
 
     useEffect(() => {
+        /*
         api.getSportEvents().then(response => {
             const {
                 videoStandEventCurrent,
@@ -31,30 +33,23 @@ const App: React.FC<Props> = (props: Props) => {
                 setVideoStandEventNext(videoStandEventNext);
             }
         });
-
+        */
         // Тестовый код, можно раскомментировать и проверить без сервера
-        /*
+        /**/
         const videoStandEvents: VideoStandEvent[] = [
             {
-                dt_start: "2024-08-16T10:00:00+03:00",
-                dt_end: "2024-08-20T23:59:00+03:00",
+                dt_start: new Date(Date.now() + COUNT_MILLISECONDS_IN_DAY / 2).toString(),
+                dt_end: new Date(Date.now() + COUNT_MILLISECONDS_IN_DAY).toString(),
                 dt_create: "2024-01-31T02:39:01+03:00",
                 is_main: false,
                 title: "Чемпионат Москвы",
             },
             {
-                dt_start: "2024-07-01T11:13:00+03:00",
-                dt_end: "2024-07-10T11:14:00+03:00",
+                dt_start: new Date(Date.now() + COUNT_MILLISECONDS_IN_DAY * 4).toString(),
+                dt_end: new Date(Date.now() + COUNT_MILLISECONDS_IN_DAY * 5).toString(),
                 dt_create: "2023-01-31T02:39:01+03:00",
                 is_main: true,
                 title: "Чемпионат Ярославля",
-            },
-            {
-                dt_start: "2024-10-16T10:00:00+03:00",
-                dt_end: "2024-10-18T23:59:00+03:00",
-                dt_create: "2024-01-31T02:39:01+03:00",
-                is_main: false,
-                title: "Чемпионат Нижнего Новгорода",
             },
         ];
         const {
@@ -69,7 +64,6 @@ const App: React.FC<Props> = (props: Props) => {
         if (videoStandEventNext) {
             setVideoStandEventNext(videoStandEventNext);
         }
-         */
     }, []);
 
     const mode: DefaultWidget_mode = (videoStandEventCurrent || videoStandEventNext)
